@@ -1,0 +1,106 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+</head>
+<body>
+<h1>TodoList</h1>
+<form th:action="@{/}" method="post">
+    <input name="title" placeholder="Add to list"/>
+    <button>Add</button>
+</form>
+<table>
+    <thead>
+    <tr>
+        <th>No</th>
+        <th>Work</th>
+        <th>Executed</th>
+        <th>Cancel</th>
+        <th>Reschedule</th>
+        <th>Execute</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="todoentity : ${toDoEntityList}">
+        <td th:text="${todoentity.id}"></td>
+        <td th:text="${todoentity.title}"></td>
+        <td th:text="${todoentity.completed}"></td>
+        <td><button id="delete-btn" th:onclick="deleteItem([[${todoentity.id}]])">Cancel</button></td>
+        <td><button id="reviseBtn" th:onclick="openModal([[${todoentity.id}]])">Reschedule</button></td>
+        <td><button id="DoneBtn" th:onclick="ExecuteClick([[${todoentity.id}]])">Execute</button></td>
+    </tr>
+    </tbody>
+</table>
+    <div class="modal">
+        <div class="modal_content">
+            <input id="revise" placeholder="Change the Schedule Name"/>
+            <button type="submit" id="completeBtn" onclick="reviseItem()">Change</button>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+
+function deleteItem(id){
+    console.log(id)
+    const url = "/"+id
+    $.ajax({
+        type:'delete',
+        url:url,
+        contentType:'application/json; charset=utf-8'
+        }).done(function() {
+        alert('Successfully Deleted');
+        window.location.href = '/';
+        }).fail(function (error){
+        alert(JSON.stringify(error));
+        });
+        }
+function openModal(id){
+    value = id
+    $(".modal").fadeIn();
+}
+
+function reviseItem(){
+
+    var id = value;
+    console.log(id)
+    var contentWritten = document.getElementById("revise").value;
+    var updateContent = contentWritten;
+    console.log(updateContent)
+    const url = "/"+id;
+     $.ajax({
+        type:'put',
+        url:url,
+        contentType:'application/json; charset=utf-8',
+        data: updateContent,
+        }).done(function() {
+        alert('Plan has been changed.');
+        window.location.href = '/';
+        }).fail(function (error){
+        alert(JSON.stringify(error));
+        });
+
+     $(".modal").fadeOut();
+}
+function ExecuteClick(id){
+    console.log(id)
+    const url = "/done/"+id
+     $.ajax({
+        type:'delete',
+        url:url,
+        contentType:'application/json; charset=utf-8'
+        }).done(function() {
+        alert('Successfully Deleted');
+        window.location.href = '/';
+        }).fail(function (error){
+        alert(JSON.stringify(error));
+        });
+
+        $(".modal").fadeOut();
+}
+function openModal(id){
+    value = id
+    $(".modal").fadeIn();
+}
+</script>
+</html>
