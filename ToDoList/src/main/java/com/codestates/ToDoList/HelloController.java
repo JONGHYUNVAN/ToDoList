@@ -10,6 +10,6 @@ public class HelloController {
     @ResponseBody
 
     public String hello(){
-        return "hello world";
+        return "Hello To-do Application!!";
     }
 }
